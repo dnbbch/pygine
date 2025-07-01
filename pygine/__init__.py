@@ -36,7 +36,7 @@ from .effects import (
     get_screen_shake_offset,
     is_screen_shaking,
 )
-from .ui import UIElement, Button, HealthBar, ProgressBar, Text, Panel, TextInput
+from .ui import UIElement, Button, HealthBar, ProgressBar, Text, Panel, TextInput, draw_rounded_rect, draw_rounded_rect_border
 from .camera import Camera
 from .scene import Scene, SceneManager
 from .physics import PhysicsBody
@@ -79,6 +79,8 @@ __all__ = [
     "Text",
     "Panel",
     "TextInput",
+    "draw_rounded_rect",
+    "draw_rounded_rect_border",
     # Расширенные возможности
     "Camera",
     "Scene",
