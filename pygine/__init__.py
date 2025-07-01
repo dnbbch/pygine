@@ -36,7 +36,7 @@ from .effects import (
     get_screen_shake_offset,
     is_screen_shaking,
 )
-from .ui import UIElement, Button, HealthBar, ProgressBar, Text, Panel
+from .ui import UIElement, Button, HealthBar, ProgressBar, Text, Panel, TextInput
 from .camera import Camera
 from .scene import Scene, SceneManager
 from .physics import PhysicsBody
@@ -78,6 +78,7 @@ __all__ = [
     "ProgressBar",
     "Text",
     "Panel",
+    "TextInput",
     # Расширенные возможности
     "Camera",
     "Scene",
