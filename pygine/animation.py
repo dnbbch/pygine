@@ -126,8 +126,8 @@ class AnimationManager:
         """
         Обновить таймер анимации и, при необходимости, переключить кадр.
 
-        Args:
-            dt: Delta time in seconds
+        Аргументы:
+            dt: Дельта‑время в секундах
         """
         if not self.is_playing or self.is_paused or not self.current_animation:
             return
