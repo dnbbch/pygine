@@ -83,7 +83,7 @@ ui_elements = [
 instruction = pg.Text(450, 600, "Все элементы поддерживают параметр border_radius", size=18, color=(180, 180, 180))
 instruction.rect.centerx = 450
 
-instruction2 = pg.Text(450, 630, "0 = острые углы, больше = более скругленные", size=16, color=(150, 150, 150))
+instruction2 = pg.Text(450, 630, "0 = острые углы, больше = скругленные", size=16, color=(150, 150, 150))
 instruction2.rect.centerx = 450
 
 
