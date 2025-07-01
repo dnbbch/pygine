@@ -1,0 +1,97 @@
+site_name: pygine Documentation
+site_description: Упрощённая библиотека разработки игр на основе pygame
+site_author: pygine contributors
+site_url: https://dnbbch.github.io/pygine
+
+repo_name: dnbbch/pygine
+repo_url: https://github.com/dnbbch/pygine
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: ru
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Переключить на тёмную тему
+    - scheme: slate
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Переключить на светлую тему
+
+nav:
+  - Главная: index.md
+  - Быстрый старт: quickstart.md
+  - API Reference:
+    - Обзор: api/index.md
+    - Основные классы:
+      - Game: api/game.md
+      - AnimatedSprite: api/sprite.md
+      - Animation: api/animation.md
+    - Системы:
+      - Эффекты: api/effects.md
+      - UI компоненты: api/ui.md
+      - Камера: api/camera.md
+      - Сцены: api/scene.md
+      - Физика: api/physics.md
+    - Утилиты:
+      - Общие функции: api/utils.md
+      - Инструменты спрайтшитов: api/spritesheet_tools.md
+  - Примеры:
+    - Обзор примеров: examples/index.md
+
+plugins:
+  - search:
+      lang: ru
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_root_toc_entry: false
+            heading_level: 2
+  - gen-files:
+      scripts:
+        - docs/gen_ref_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - section-index
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/dnbbch/pygine
