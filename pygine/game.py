@@ -4,7 +4,7 @@
 
 import pygame
 import sys
-from typing import Tuple, Optional, Callable, List
+from typing import Tuple, Optional, Callable, List, Union
 from .utils import update_input_state
 
 
@@ -22,6 +22,7 @@ class Game:
         title: Заголовок окна
         fps: Целевая частота кадров
         background_color: Цвет фона в формате (R, G, B)
+        background_image: Путь к изображению фона (опционально)
         *,
         create_display: bool = True,
 
@@ -36,6 +37,10 @@ class Game:
         ...     player.draw(game.screen)
         ...
         >>> game.run(update, draw)
+    
+    Пример с фоновым изображением:
+        >>> game = Game(800, 600, "Игра с фоном", background_image="background.png")
+        >>> game.run(update, draw)
     """
 
     def __init__(
@@ -45,6 +50,7 @@ class Game:
         title: str = "Pygame Easy Game",
         fps: int = 60,
         background_color: Tuple[int, int, int] = (50, 50, 50),
+        background_image: Optional[str] = None,
         *,
         create_display: bool = True,
     ):
@@ -59,6 +65,11 @@ class Game:
         self.fps = fps
         self.background_color = background_color
 
+        # Фоновое изображение (инициализируем переменные)
+        self.background_image_path = background_image
+        self.background_image = None
+        self.background_surface = None
+
         # Создаём окно, только если об этом явно не попросили отказаться.
         if create_display:
             self.screen = pygame.display.set_mode((width, height))
@@ -71,6 +82,10 @@ class Game:
             else:
                 # Fallback: создаём временную поверхность (off-screen).
                 self.screen = pygame.Surface((width, height))
+
+        # Загружаем фоновое изображение после создания окна
+        if background_image:
+            self._load_background_image(background_image)
 
         # Параметры игрового цикла
         self.clock = pygame.time.Clock()
@@ -92,6 +107,28 @@ class Game:
         # Отладочная информация
         self.show_fps = False
         self.font = None
+
+    def _load_background_image(self, image_path: str) -> None:
+        """
+        Загрузить и масштабировать фоновое изображение.
+        
+        Аргументы:
+            image_path: Путь к файлу изображения
+        """
+        try:
+            # Загружаем оригинальное изображение
+            self.background_image = pygame.image.load(image_path).convert()
+            
+            # Масштабируем изображение под размеры окна
+            self.background_surface = pygame.transform.scale(
+                self.background_image, (self.width, self.height)
+            )
+            
+        except pygame.error as e:
+            print(f"Предупреждение: Не удалось загрузить фоновое изображение '{image_path}': {e}")
+            print("Будет использован цветовой фон.")
+            self.background_image = None
+            self.background_surface = None
 
     def run(
         self,
@@ -180,8 +217,13 @@ class Game:
 
     def _draw(self) -> None:
         """Отрисовать всё на экран."""
-        # Clear screen
-        self.screen.fill(self.background_color)
+        # Отрисовка фона
+        if self.background_surface is not None:
+            # Используем фоновое изображение
+            self.screen.blit(self.background_surface, (0, 0))
+        else:
+            # Используем цветовой фон
+            self.screen.fill(self.background_color)
 
         # Draw all sprites
         self.all_sprites.draw(self.screen)
@@ -242,6 +284,35 @@ class Game:
             color: RGB-кортеж цвета (0–255)
         """
         self.background_color = color
+        # Если установлен цвет фона, убираем фоновое изображение
+        self.background_surface = None
+
+    def set_background_image(self, image_path: Optional[str]) -> None:
+        """
+        Установить фоновое изображение.
+        
+        Изображение автоматически масштабируется под размеры окна.
+        Передача None отключает фоновое изображение.
+
+        Аргументы:
+            image_path: Путь к файлу изображения или None для отключения
+        """
+        if image_path is None:
+            self.background_image_path = None
+            self.background_image = None
+            self.background_surface = None
+        else:
+            self.background_image_path = image_path
+            self._load_background_image(image_path)
+
+    def has_background_image(self) -> bool:
+        """
+        Проверить, установлено ли фоновое изображение.
+        
+        Возвращает:
+            True, если фоновое изображение загружено и готово к использованию
+        """
+        return self.background_surface is not None
 
     def set_title(self, title: str) -> None:
         """
@@ -359,4 +430,6 @@ class Game:
             "sprite_count": len(self.all_sprites),
             "screen_size": (self.width, self.height),
             "background_color": self.background_color,
+            "background_image": self.background_image_path,
+            "has_background_image": self.has_background_image(),
         }
