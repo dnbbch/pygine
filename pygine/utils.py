@@ -1,5 +1,5 @@
 """
-Utility functions for simplified game development
+Утилитарные функции для упрощения разработки игр
 """
 
 import pygame
@@ -7,7 +7,7 @@ import time
 from typing import Tuple, Set, Any
 
 
-# Global state for input tracking
+# Глобальное состояние для отслеживания ввода
 _pressed_keys: Set[int] = set()
 _just_pressed_keys: Set[int] = set()
 _just_released_keys: Set[int] = set()
@@ -19,23 +19,23 @@ _mouse_pos: Tuple[int, int] = (0, 0)
 
 def update_input_state() -> None:
     """
-    Update input state tracking. Should be called once per frame.
-    This function is automatically called by the Game class.
+    Обновить отслеживание состояния ввода. Должна вызываться один раз за кадр.
+    Эта функция автоматически вызывается классом Game.
     """
     global _pressed_keys, _just_pressed_keys, _just_released_keys
     global _mouse_pressed, _mouse_just_pressed, _mouse_just_released, _mouse_pos
 
-    # Clear just-pressed states from previous frame
+    # Очищаем состояния "только что нажато" с предыдущего кадра
     _just_pressed_keys.clear()
     _just_released_keys.clear()
     _mouse_just_pressed = (False, False, False)
     _mouse_just_released = (False, False, False)
 
-    # Get current states
+    # Получаем текущие состояния
     current_keys = set()
     keys = pygame.key.get_pressed()
 
-    # Check specific keys we care about
+    # Проверяем конкретные клавиши, которые нас интересуют
     key_codes_to_check = [
         pygame.K_LEFT,
         pygame.K_RIGHT,
@@ -63,25 +63,25 @@ def update_input_state() -> None:
         pygame.K_BACKSPACE,
     ]
 
-    # Add letter keys (a-z)
+    # Добавляем буквенные клавиши (a-z)
     for i in range(ord("a"), ord("z") + 1):
         key_codes_to_check.append(getattr(pygame, f"K_{chr(i)}"))
 
-    # Add number keys (0-9)
+    # Добавляем цифровые клавиши (0-9)
     for i in range(10):
         key_codes_to_check.append(getattr(pygame, f"K_{i}"))
 
-    # Check if each key is pressed
+    # Проверяем, нажата ли каждая клавиша
     for key_code in key_codes_to_check:
         if keys[key_code]:
             current_keys.add(key_code)
 
-    # Determine just pressed and just released keys
+    # Определяем только что нажатые и только что отпущенные клавиши
     _just_pressed_keys = current_keys - _pressed_keys
     _just_released_keys = _pressed_keys - current_keys
     _pressed_keys = current_keys
 
-    # Update mouse state
+    # Обновляем состояние мыши
     current_mouse = pygame.mouse.get_pressed()
     _mouse_just_pressed = tuple(
         current_mouse[i] and not _mouse_pressed[i] for i in range(3)
@@ -95,13 +95,13 @@ def update_input_state() -> None:
 
 def key_pressed(key_code: int) -> bool:
     """
-    Check if a key is currently being held down.
+    Проверить, удерживается ли клавиша в данный момент.
 
     Args:
-        key_code: Pygame key code (e.g., pygame.K_LEFT, pygame.K_SPACE, pygame.K_a)
+        key_code: Код клавиши pygame (например, pygame.K_LEFT, pygame.K_SPACE, pygame.K_a)
 
     Returns:
-        True if key is currently pressed
+        True, если клавиша сейчас нажата
 
     Example:
         >>> if key_pressed(pygame.K_LEFT):
@@ -114,13 +114,13 @@ def key_pressed(key_code: int) -> bool:
 
 def key_just_pressed(key_code: int) -> bool:
     """
-    Check if a key was just pressed this frame.
+    Проверить, была ли клавиша только что нажата в этом кадре.
 
     Args:
-        key_code: Pygame key code (e.g., pygame.K_LEFT, pygame.K_SPACE, pygame.K_a)
+        key_code: Код клавиши pygame (например, pygame.K_LEFT, pygame.K_SPACE, pygame.K_a)
 
     Returns:
-        True if key was pressed this frame
+        True, если клавиша была нажата в этом кадре
 
     Example:
         >>> if key_just_pressed(pygame.K_SPACE):
@@ -131,13 +131,13 @@ def key_just_pressed(key_code: int) -> bool:
 
 def key_just_released(key_code: int) -> bool:
     """
-    Check if a key was just released this frame.
+    Проверить, была ли клавиша только что отпущена в этом кадре.
 
     Args:
-        key_code: Pygame key code (e.g., pygame.K_LEFT, pygame.K_SPACE, pygame.K_a)
+        key_code: Код клавиши pygame (например, pygame.K_LEFT, pygame.K_SPACE, pygame.K_a)
 
     Returns:
-        True if key was released this frame
+        True, если клавиша была отпущена в этом кадре
 
     Example:
         >>> if key_just_released(pygame.K_SPACE):
@@ -148,76 +148,76 @@ def key_just_released(key_code: int) -> bool:
 
 def get_mouse_pos() -> Tuple[int, int]:
     """
-    Get current mouse position.
+    Получить текущую позицию мыши.
 
     Returns:
-        Tuple of (x, y) mouse coordinates
+        Кортеж координат мыши (x, y)
     """
     return _mouse_pos
 
 
 def get_mouse_pressed() -> Tuple[bool, bool, bool]:
     """
-    Get current mouse button states.
+    Получить текущие состояния кнопок мыши.
 
     Returns:
-        Tuple of (left, middle, right) button states
+        Кортеж состояний кнопок (левая, средняя, правая)
     """
     return _mouse_pressed
 
 
 def mouse_just_pressed(button: int = 0) -> bool:
     """
-    Check if mouse button was just pressed this frame.
+    Проверить, была ли кнопка мыши только что нажата в этом кадре.
 
     Args:
-        button: Mouse button (0=left, 1=middle, 2=right)
+        button: Кнопка мыши (0=левая, 1=средняя, 2=правая)
 
     Returns:
-        True if button was pressed this frame
+        True, если кнопка была нажата в этом кадре
     """
     return _mouse_just_pressed[button] if 0 <= button < 3 else False
 
 
 def mouse_just_released(button: int = 0) -> bool:
     """
-    Check if mouse button was just released this frame.
+    Проверить, была ли кнопка мыши только что отпущена в этом кадре.
 
     Args:
-        button: Mouse button (0=left, 1=middle, 2=right)
+        button: Кнопка мыши (0=левая, 1=средняя, 2=правая)
 
     Returns:
-        True if button was released this frame
+        True, если кнопка была отпущена в этом кадре
     """
     return _mouse_just_released[button] if 0 <= button < 3 else False
 
 
 def wait(seconds: float) -> None:
     """
-    Wait for a specified number of seconds.
+    Ожидать указанное количество секунд.
 
     Args:
-        seconds: Time to wait in seconds
+        seconds: Время ожидания в секундах
 
     Example:
-        >>> wait(2.5)  # Wait for 2.5 seconds
+        >>> wait(2.5)  # Ждать 2.5 секунды
     """
     time.sleep(seconds)
 
 
 def wait_for_key(key_code: int = None) -> int:
     """
-    Wait until a key is pressed.
+    Ожидать, пока не будет нажата клавиша.
 
     Args:
-        key_code: Specific pygame key code to wait for (optional)
+        key_code: Конкретный код клавиши pygame для ожидания (опционально)
 
     Returns:
-        Pygame key code of the key that was pressed
+        Код клавиши pygame, которая была нажата
 
     Example:
-        >>> wait_for_key(pygame.K_SPACE)  # Wait for spacebar
-        >>> pressed = wait_for_key()  # Wait for any key
+        >>> wait_for_key(pygame.K_SPACE)  # Ждать пробел
+        >>> pressed = wait_for_key()  # Ждать любую клавишу
     """
     pygame.event.clear()
 
@@ -230,22 +230,22 @@ def wait_for_key(key_code: int = None) -> int:
                 if key_code is None or event.key == key_code:
                     return event.key
 
-        time.sleep(0.01)  # Small delay to prevent busy waiting
+        time.sleep(0.01)  # Небольшая задержка для предотвращения активного ожидания
 
 
 def wait_for_click(button: int = 0) -> Tuple[int, int]:
     """
-    Wait until mouse button is clicked.
+    Ожидать, пока не будет нажата кнопка мыши.
 
     Args:
-        button: Mouse button to wait for (0=left, 1=middle, 2=right)
+        button: Кнопка мыши для ожидания (0=левая, 1=средняя, 2=правая)
 
     Returns:
-        Position where mouse was clicked
+        Позиция, где была нажата мышь
 
     Example:
-        >>> pos = wait_for_click()  # Wait for left click
-        >>> pos = wait_for_click(2)  # Wait for right click
+        >>> pos = wait_for_click()  # Ждать левый клик
+        >>> pos = wait_for_click(2)  # Ждать правый клик
     """
     pygame.event.clear()
 
@@ -255,7 +255,7 @@ def wait_for_click(button: int = 0) -> Tuple[int, int]:
                 pygame.quit()
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == button + 1:  # pygame uses 1-based indexing
+                if event.button == button + 1:  # pygame использует индексацию с 1
                     return event.pos
 
         time.sleep(0.01)
@@ -263,10 +263,10 @@ def wait_for_click(button: int = 0) -> Tuple[int, int]:
 
 def wait_for_animation(sprite: Any) -> None:
     """
-    Wait until sprite's current animation finishes.
+    Ожидать, пока не завершится текущая анимация спрайта.
 
     Args:
-        sprite: AnimatedSprite instance
+        sprite: Экземпляр AnimatedSprite
 
     Example:
         >>> player.play_animation('attack', loop=False)
@@ -284,14 +284,14 @@ def wait_for_animation(sprite: Any) -> None:
 
 def distance(pos1: Tuple[float, float], pos2: Tuple[float, float]) -> float:
     """
-    Calculate distance between two points.
+    Вычислить расстояние между двумя точками.
 
     Args:
-        pos1: First position (x, y)
-        pos2: Second position (x, y)
+        pos1: Первая позиция (x, y)
+        pos2: Вторая позиция (x, y)
 
     Returns:
-        Distance between points
+        Расстояние между точками
     """
     dx = pos2[0] - pos1[0]
     dy = pos2[1] - pos1[1]
@@ -300,13 +300,13 @@ def distance(pos1: Tuple[float, float], pos2: Tuple[float, float]) -> float:
 
 def normalize_vector(vector: Tuple[float, float]) -> Tuple[float, float]:
     """
-    Normalize a 2D vector to unit length.
+    Нормализовать 2D вектор до единичной длины.
 
     Args:
-        vector: Vector to normalize (x, y)
+        vector: Вектор для нормализации (x, y)
 
     Returns:
-        Normalized vector
+        Нормализованный вектор
     """
     x, y = vector
     length = (x**2 + y**2) ** 0.5
@@ -319,29 +319,29 @@ def normalize_vector(vector: Tuple[float, float]) -> Tuple[float, float]:
 
 def lerp(start: float, end: float, t: float) -> float:
     """
-    Linear interpolation between two values.
+    Линейная интерполяция между двумя значениями.
 
     Args:
-        start: Start value
-        end: End value
-        t: Interpolation factor (0.0 to 1.0)
+        start: Начальное значение
+        end: Конечное значение
+        t: Фактор интерполяции (0.0 до 1.0)
 
     Returns:
-        Interpolated value
+        Интерполированное значение
     """
     return start + (end - start) * max(0.0, min(1.0, t))
 
 
 def clamp(value: float, min_val: float, max_val: float) -> float:
     """
-    Clamp value between minimum and maximum.
+    Ограничить значение между минимумом и максимумом.
 
     Args:
-        value: Value to clamp
-        min_val: Minimum allowed value
-        max_val: Maximum allowed value
+        value: Значение для ограничения
+        min_val: Минимально допустимое значение
+        max_val: Максимально допустимое значение
 
     Returns:
-        Clamped value
+        Ограниченное значение
     """
     return max(min_val, min(max_val, value))

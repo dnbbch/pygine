@@ -1,5 +1,5 @@
 """
-Tools for working with spritesheets and visualizing frame layouts
+Инструменты для работы со спрайтшитами и визуализации макетов кадров
 """
 
 import pygame
@@ -17,17 +17,29 @@ def visualize_spritesheet(
     font_size: int = 20,
 ) -> str:
     """
-    Create a visualization of a spritesheet with frame numbers and grid overlay.
+    Создать визуализацию спрайтшита с номерами кадров и наложением сетки.
+    
+    Args:
+        image_path: Путь к файлу спрайтшита
+        frame_size: Размер кадра (ширина, высота)
+        output_path: Путь для сохранения визуализации (опционально)
+        grid_color: Цвет сетки в формате RGB
+        text_color: Цвет текста номеров кадров
+        text_bg_color: Цвет фона под текстом
+        font_size: Размер шрифта для номеров кадров
+        
+    Returns:
+        Путь к сохранённому файлу визуализации
     """
-    # Initialize pygame if not already done
+    # Инициализируем pygame, если ещё не сделано
     if not pygame.get_init():
         pygame.init()
 
-    # Initialize display if not already done (required for font operations)
+    # Инициализируем дисплей, если ещё не сделано (требуется для операций со шрифтами)
     if not pygame.display.get_init():
         pygame.display.set_mode((1, 1), pygame.HIDDEN)
 
-    # Load the spritesheet
+    # Загружаем спрайтшит
     original_image = pygame.image.load(image_path).convert_alpha()
     sheet_width = original_image.get_width()
     sheet_height = original_image.get_height()
@@ -37,20 +49,20 @@ def visualize_spritesheet(
     frames_per_col = sheet_height // frame_height
     total_frames = frames_per_row * frames_per_col
 
-    # Create info header height
+    # Создаём высоту информационного заголовка
     info_height = 60
 
-    # Create new image with info header
+    # Создаём новое изображение с информационным заголовком
     viz_width = sheet_width
     viz_height = sheet_height + info_height
     viz_image = pygame.Surface((viz_width, viz_height), pygame.SRCALPHA)
-    viz_image.fill((40, 40, 40))  # Dark background for header
+    viz_image.fill((40, 40, 40))  # Тёмный фон для заголовка
 
-    # Draw info header
+    # Рисуем информационный заголовок
     font_big = pygame.font.Font(None, 24)
     font_small = pygame.font.Font(None, 18)
 
-    # Main info
+    # Основная информация
     info_text = font_big.render(
         f"Size: {sheet_width}x{sheet_height} | Frame: {frame_width}x{frame_height}",
         True,
@@ -58,7 +70,7 @@ def visualize_spritesheet(
     )
     viz_image.blit(info_text, (10, 5))
 
-    # Grid info
+    # Информация о сетке
     grid_text = font_small.render(
         f"Grid: {frames_per_row} cols x {frames_per_col} rows = {total_frames} frames",
         True,
@@ -66,53 +78,53 @@ def visualize_spritesheet(
     )
     viz_image.blit(grid_text, (10, 30))
 
-    # Draw original spritesheet below header
+    # Рисуем оригинальный спрайтшит под заголовком
     viz_image.blit(original_image, (0, info_height))
 
-    # Create font for frame numbers
+    # Создаём шрифт для номеров кадров
     font = pygame.font.Font(None, font_size)
 
-    # Draw grid and frame numbers (offset by header height)
+    # Рисуем сетку и номера кадров (со смещением на высоту заголовка)
     for row in range(frames_per_col):
         for col in range(frames_per_row):
             frame_index = row * frames_per_row + col
 
-            # Calculate frame position (offset by header)
+            # Вычисляем позицию кадра (со смещением на заголовок)
             x = col * frame_width
             y = row * frame_height + info_height
 
-            # Draw grid lines
+            # Рисуем линии сетки
             frame_rect = pygame.Rect(x, y, frame_width, frame_height)
             pygame.draw.rect(viz_image, grid_color, frame_rect, 2)
 
-            # Draw frame number
+            # Рисуем номер кадра
             text_surface = font.render(str(frame_index), True, text_color)
             text_rect = text_surface.get_rect()
 
-            # Position text in corner of frame
+            # Позиционируем текст в углу кадра
             text_x = x + 2
             text_y = y + 2
 
-            # Draw text background for better readability
+            # Рисуем фон текста для лучшей читаемости
             bg_rect = pygame.Rect(
                 text_x - 1, text_y - 1, text_rect.width + 2, text_rect.height + 2
             )
             pygame.draw.rect(viz_image, text_bg_color, bg_rect)
 
-            # Draw the text
+            # Рисуем текст
             viz_image.blit(text_surface, (text_x, text_y))
 
-    # Determine output path
+    # Определяем путь вывода
     if output_path is None:
         path_obj = Path(image_path)
         output_path = str(path_obj.parent / f"{path_obj.stem}_grid{path_obj.suffix}")
 
-    # Save the visualization
+    # Сохраняем визуализацию
     pygame.image.save(viz_image, output_path)
 
-    print(f"Spritesheet visualization saved to: {output_path}")
-    print(f"Total frames: {total_frames} ({frames_per_row}x{frames_per_col})")
-    print(f"Frame size: {frame_width}x{frame_height}")
+    print(f"Визуализация спрайтшита сохранена в: {output_path}")
+    print(f"Всего кадров: {total_frames} ({frames_per_row}x{frames_per_col})")
+    print(f"Размер кадра: {frame_width}x{frame_height}")
 
     return output_path
 
@@ -125,32 +137,32 @@ def create_spritesheet_from_frames(
     frames_per_row: int = None,
 ) -> str:
     """
-    Create a new compact spritesheet from selected frames of another spritesheet.
+    Создать новый компактный спрайтшит из выбранных кадров другого спрайтшита.
 
     Args:
-        source_sheet_path: Path to the source spritesheet
-        frame_size: (width, height) of each frame
-        frame_indices: List of frame indices to include
-        output_path: Where to save the new spritesheet (optional)
-        frames_per_row: How many frames per row (auto if None)
+        source_sheet_path: Путь к исходному спрайтшиту
+        frame_size: (ширина, высота) каждого кадра
+        frame_indices: Список индексов кадров для включения
+        output_path: Где сохранить новый спрайтшит (опционально)
+        frames_per_row: Сколько кадров в ряду (автоматически, если None)
 
     Returns:
-        Path to the created spritesheet file
+        Путь к созданному файлу спрайтшита
     """
     if not pygame.get_init():
         pygame.init()
 
-    # Initialize display if not already done
+    # Инициализируем дисплей, если ещё не сделано
     if not pygame.display.get_init():
         pygame.display.set_mode((1, 1), pygame.HIDDEN)
 
-    # Load source spritesheet
+    # Загружаем исходный спрайтшит
     source_sheet = pygame.image.load(source_sheet_path).convert_alpha()
     source_width = source_sheet.get_width()
     frame_width, frame_height = frame_size
     source_frames_per_row = source_width // frame_width
 
-    # Extract frames from source
+    # Извлекаем кадры из источника
     frames = []
     for frame_index in frame_indices:
         row = frame_index // source_frames_per_row
@@ -163,10 +175,10 @@ def create_spritesheet_from_frames(
         frame.blit(source_sheet, (0, 0), pygame.Rect(x, y, frame_width, frame_height))
         frames.append(frame)
 
-    # Calculate new spritesheet dimensions
+    # Вычисляем размеры нового спрайтшита
     total_frames = len(frames)
     if frames_per_row is None:
-        # Auto-calculate optimal layout
+        # Автоматически вычисляем оптимальную раскладку
         if total_frames <= 4:
             frames_per_row = total_frames
         elif total_frames <= 8:
@@ -178,11 +190,11 @@ def create_spritesheet_from_frames(
     new_width = frames_per_row * frame_width
     new_height = rows * frame_height
 
-    # Create new compact spritesheet
+    # Создаём новый компактный спрайтшит
     new_sheet = pygame.Surface((new_width, new_height), pygame.SRCALPHA)
-    new_sheet.fill((0, 0, 0, 0))  # Transparent background
+    new_sheet.fill((0, 0, 0, 0))  # Прозрачный фон
 
-    # Place frames in new sheet
+    # Размещаем кадры в новом листе
     for i, frame in enumerate(frames):
         row = i // frames_per_row
         col = i % frames_per_row
@@ -192,15 +204,15 @@ def create_spritesheet_from_frames(
 
         new_sheet.blit(frame, (x, y))
 
-    # Save new spritesheet
+    # Сохраняем новый спрайтшит
     if output_path is None:
         path_obj = Path(source_sheet_path)
         output_path = str(path_obj.parent / f"{path_obj.stem}_custom.png")
 
     pygame.image.save(new_sheet, output_path)
 
-    print(f"New spritesheet saved to: {output_path}")
-    print(f"Frames: {total_frames} ({frames_per_row}x{rows})")
-    print(f"Size: {new_width}x{new_height}")
+    print(f"Новый спрайтшит сохранён в: {output_path}")
+    print(f"Кадры: {total_frames} ({frames_per_row}x{rows})")
+    print(f"Размер: {new_width}x{new_height}")
 
     return output_path

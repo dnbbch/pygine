@@ -1,14 +1,14 @@
 """
-pygine - Simplified pygame library for game development education
+pygine — упрощённая библиотека поверх pygame для обучения разработке игр
 
-A comprehensive library that simplifies game development with pygame,
-designed for educational purposes and easy prototyping.
+Универсальная библиотека, которая упрощает создание игр с использованием
+pygame. Предназначена для образовательных целей и быстрого прототипирования.
 """
 
 __version__ = "1.0.0"
 __author__ = "pygine contributors"
 
-# Core imports
+# Основные импорты
 from .sprite import AnimatedSprite
 from .animation import Animation, AnimationManager
 from .game import Game
@@ -39,14 +39,14 @@ from .scene import Scene, SceneManager
 from .physics import PhysicsBody
 from .spritesheet_tools import visualize_spritesheet, create_spritesheet_from_frames
 
-# Export all main classes and functions
+# Экспорт основных классов и функций
 __all__ = [
-    # Core classes
+    # Базовые классы
     "AnimatedSprite",
     "Animation",
     "AnimationManager",
     "Game",
-    # Utility functions
+    # Утилитарные функции
     "wait",
     "wait_for_key",
     "wait_for_click",
@@ -59,38 +59,38 @@ __all__ = [
     "normalize_vector",
     "lerp",
     "clamp",
-    # Effects
+    # Эффекты
     "Particle",
     "ParticleSystem",
     "create_explosion",
     "create_smoke",
     "create_sparkles",
-    # UI components
+    # Компоненты интерфейса
     "UIElement",
     "Button",
     "HealthBar",
     "ProgressBar",
     "Text",
     "Panel",
-    # Advanced features
+    # Расширенные возможности
     "Camera",
     "Scene",
     "SceneManager",
     "PhysicsBody",
-    # Spritesheet tools
+    # Инструменты для спрайтшитов
     "visualize_spritesheet",
     "create_spritesheet_from_frames",
 ]
 
 # ---------------------------------------------------------------------------
-# Backward compatibility: allow "import pygame_easy as ..." to keep working
+# Обратная совместимость: поддержка старого импорта "import pygame_easy as ..."
 # ---------------------------------------------------------------------------
 import sys as _sys, importlib as _importlib
 
-# Expose this package under the old name
+# Публикуем пакет под старым именем
 _sys.modules["pygame_easy"] = _sys.modules[__name__]
 
-# Expose submodules too
+# И подмодули тоже
 _submodules = [
     "animation",
     "sprite",

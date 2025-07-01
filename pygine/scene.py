@@ -1,5 +1,5 @@
 """
-Scene management system
+Система управления сценами
 """
 
 from typing import Dict, Optional, Callable
@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 
 
 class Scene(ABC):
-    """Base class for game scenes."""
+    """Базовый класс для игровых сцен."""
 
     def __init__(self, name: str):
         self.name = name
@@ -15,36 +15,36 @@ class Scene(ABC):
 
     @abstractmethod
     def update(self, dt: float) -> None:
-        """Update scene logic."""
+        """Обновить логику сцены."""
         pass
 
     @abstractmethod
     def draw(self, screen) -> None:
-        """Draw scene."""
+        """Отрисовать сцену."""
         pass
 
     def on_enter(self) -> None:
-        """Called when scene becomes active."""
+        """Вызывается, когда сцена становится активной."""
         self.active = True
 
     def on_exit(self) -> None:
-        """Called when scene becomes inactive."""
+        """Вызывается, когда сцена деактивируется."""
         self.active = False
 
 
 class SceneManager:
-    """Manages multiple game scenes."""
+    """Управляет несколькими игровыми сценами."""
 
     def __init__(self):
         self.scenes: Dict[str, Scene] = {}
         self.current_scene: Optional[Scene] = None
 
     def add_scene(self, scene: Scene) -> None:
-        """Add a scene."""
+        """Добавить сцену."""
         self.scenes[scene.name] = scene
 
     def switch_to(self, scene_name: str) -> bool:
-        """Switch to a specific scene."""
+        """Переключиться на указанную сцену."""
         if scene_name in self.scenes:
             if self.current_scene:
                 self.current_scene.on_exit()
@@ -55,11 +55,11 @@ class SceneManager:
         return False
 
     def update(self, dt: float) -> None:
-        """Update current scene."""
+        """Обновить текущую сцену."""
         if self.current_scene:
             self.current_scene.update(dt)
 
     def draw(self, screen) -> None:
-        """Draw current scene."""
+        """Отрисовать текущую сцену."""
         if self.current_scene:
             self.current_scene.draw(screen)

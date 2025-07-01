@@ -1,12 +1,12 @@
 """
-Basic physics system
+Базовая система физики
 """
 
 from typing import Tuple
 
 
 class PhysicsBody:
-    """Basic physics body for sprites."""
+    """Базовое физическое тело для спрайтов."""
 
     def __init__(self, mass: float = 1.0, gravity: float = 400.0):
         self.mass = mass
@@ -19,45 +19,45 @@ class PhysicsBody:
         self.air_resistance = 0.99  # Сопротивление воздуха
 
     def apply_force(self, force_x: float, force_y: float) -> None:
-        """Apply force to the body."""
+        """Применить силу к телу."""
         self.acceleration[0] += force_x / self.mass
         self.acceleration[1] += force_y / self.mass
 
     def apply_gravity(self, dt: float) -> None:
-        """Apply gravity force."""
+        """Применить силу гравитации."""
         if not self.on_ground:
             # Гравитация - постоянное ускорение вниз
             self.acceleration[1] += self.gravity
 
     def update(self, dt: float) -> Tuple[float, float]:
-        """Update physics and return position change."""
-        # Apply gravity
+        """Обновить физику и вернуть изменение позиции."""
+        # Применяем гравитацию
         self.apply_gravity(dt)
 
-        # Update velocity
+        # Обновляем скорость
         self.velocity[0] += self.acceleration[0] * dt
         self.velocity[1] += self.acceleration[1] * dt
 
-        # Apply air resistance (затухание в воздухе)
+        # Применяем сопротивление воздуха
         if not self.on_ground:
             self.velocity[0] *= self.air_resistance
             self.velocity[1] *= self.air_resistance
 
-        # Apply friction (трение о землю)
+        # Применяем трение о землю
         if self.on_ground:
             self.velocity[0] *= self.friction
 
-        # Calculate position change
+        # Вычисляем изменение позиции
         dx = self.velocity[0] * dt
         dy = self.velocity[1] * dt
 
-        # Reset acceleration
+        # Сбрасываем ускорение
         self.acceleration = [0.0, 0.0]
 
         return dx, dy
 
     def bounce(self, surface_normal: Tuple[float, float]) -> None:
-        """Bounce off a surface with given normal vector."""
+        """Отскочить от поверхности с заданным нормальным вектором."""
         nx, ny = surface_normal
         
         # Отражение скорости от поверхности
@@ -71,9 +71,9 @@ class PhysicsBody:
         self.velocity[1] *= self.bounce_factor
 
     def set_bounce_factor(self, factor: float) -> None:
-        """Set bounce factor (0.0 = no bounce, 1.0 = perfect bounce)."""
+        """Задать коэффициент упругости (0.0 = без отскока, 1.0 = идеальный)."""
         self.bounce_factor = max(0.0, min(1.0, factor))
 
     def set_friction(self, friction: float) -> None:
-        """Set friction factor (0.0 = no friction, 1.0 = full stop)."""
+        """Задать коэффициент трения (0.0 = без трения, 1.0 = полная остановка)."""
         self.friction = max(0.0, min(1.0, friction))

@@ -1,5 +1,5 @@
 """
-User interface components
+Компоненты пользовательского интерфейса
 """
 
 import pygame
@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 
 
 class UIElement(ABC):
-    """Base class for all UI elements."""
+    """Базовый класс для всех элементов интерфейса."""
 
     def __init__(self, x: int, y: int, width: int, height: int):
         self.rect = pygame.Rect(x, y, width, height)
@@ -17,21 +17,21 @@ class UIElement(ABC):
 
     @abstractmethod
     def update(self, dt: float) -> None:
-        """Update UI element."""
+        """Обновить элемент интерфейса."""
         pass
 
     @abstractmethod
     def draw(self, screen: pygame.Surface) -> None:
-        """Draw UI element."""
+        """Нарисовать элемент интерфейса."""
         pass
 
     def handle_event(self, event: pygame.event.Event) -> bool:
-        """Handle input event. Return True if event was consumed."""
+        """Обработать событие ввода. Возвращает True, если событие было обработано."""
         return False
 
 
 class Button(UIElement):
-    """Simple button UI element."""
+    """Простой элемент кнопки интерфейса."""
 
     def __init__(
         self,
@@ -48,6 +48,21 @@ class Button(UIElement):
         text_color: Tuple[int, int, int] = (255, 255, 255),
         border_color: Tuple[int, int, int] = (255, 255, 255),
     ):
+        """
+        Создать кнопку.
+        
+        Args:
+            x, y: Позиция кнопки
+            width, height: Размеры кнопки
+            text: Текст на кнопке
+            callback: Функция, вызываемая при нажатии
+            font_size: Размер шрифта
+            font_path: Путь к файлу шрифта (None для системного)
+            color: Обычный цвет кнопки
+            hover_color: Цвет при наведении
+            text_color: Цвет текста
+            border_color: Цвет границы
+        """
         super().__init__(x, y, width, height)
         self.text = text
         self.callback = callback
@@ -60,7 +75,7 @@ class Button(UIElement):
         self.hovered = False
         self.pressed = False
 
-        # Create font
+        # Создаём шрифт
         if font_path:
             try:
                 self.font = pygame.font.Font(font_path, font_size)
@@ -70,12 +85,12 @@ class Button(UIElement):
             self.font = pygame.font.Font(None, font_size)
 
     def update(self, dt: float) -> None:
-        """Update button state."""
+        """Обновить состояние кнопки."""
         mouse_pos = pygame.mouse.get_pos()
         self.hovered = self.rect.collidepoint(mouse_pos)
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Draw button."""
+        """Нарисовать кнопку."""
         if not self.visible:
             return
 
@@ -89,7 +104,7 @@ class Button(UIElement):
             screen.blit(text_surface, text_rect)
 
     def set_font_size(self, size: int) -> None:
-        """Change font size."""
+        """Изменить размер шрифта."""
         self.font_size = size
         if self.font_path:
             try:
@@ -100,7 +115,7 @@ class Button(UIElement):
             self.font = pygame.font.Font(None, size)
 
     def set_font(self, font_path: str) -> None:
-        """Change font file."""
+        """Изменить файл шрифта."""
         self.font_path = font_path
         try:
             self.font = pygame.font.Font(font_path, self.font_size)
@@ -114,7 +129,7 @@ class Button(UIElement):
         text_color: Tuple[int, int, int] = None,
         border_color: Tuple[int, int, int] = None,
     ) -> None:
-        """Change button colors."""
+        """Изменить цвета кнопки."""
         if color is not None:
             self.color = color
         if hover_color is not None:
@@ -125,7 +140,7 @@ class Button(UIElement):
             self.border_color = border_color
 
     def handle_event(self, event: pygame.event.Event) -> bool:
-        """Handle mouse events."""
+        """Обработать события мыши."""
         if not self.enabled or not self.visible:
             return False
 
@@ -151,9 +166,17 @@ class Button(UIElement):
 
 
 class HealthBar(UIElement):
-    """Health/progress bar UI element."""
+    """Элемент интерфейса полосы здоровья/прогресса."""
 
     def __init__(self, x: int, y: int, width: int, height: int, max_value: float = 100):
+        """
+        Создать полосу здоровья.
+        
+        Args:
+            x, y: Позиция полосы
+            width, height: Размеры полосы
+            max_value: Максимальное значение
+        """
         super().__init__(x, y, width, height)
         self.max_value = max_value
         self.current_value = max_value
@@ -162,18 +185,18 @@ class HealthBar(UIElement):
         self.border_color = (255, 255, 255)
 
     def update(self, dt: float) -> None:
-        """Update health bar."""
+        """Обновить полосу здоровья."""
         pass
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Draw health bar."""
+        """Нарисовать полосу здоровья."""
         if not self.visible:
             return
 
-        # Draw background
+        # Рисуем фон
         pygame.draw.rect(screen, self.background_color, self.rect)
 
-        # Draw fill
+        # Рисуем заполнение
         if self.current_value > 0:
             fill_width = int((self.current_value / self.max_value) * self.rect.width)
             fill_rect = pygame.Rect(
@@ -181,15 +204,15 @@ class HealthBar(UIElement):
             )
             pygame.draw.rect(screen, self.fill_color, fill_rect)
 
-        # Draw border
+        # Рисуем границу
         pygame.draw.rect(screen, self.border_color, self.rect, 2)
 
     def set_value(self, value: float) -> None:
-        """Set current value."""
+        """Установить текущее значение."""
         self.current_value = max(0, min(self.max_value, value))
 
     def get_percentage(self) -> float:
-        """Get value as percentage (0.0 to 1.0)."""
+        """Получить значение в процентах (0.0 до 1.0)."""
         return self.current_value / self.max_value if self.max_value > 0 else 0
 
     def set_colors(
@@ -198,7 +221,7 @@ class HealthBar(UIElement):
         fill_color: Tuple[int, int, int] = None,
         border_color: Tuple[int, int, int] = None,
     ) -> None:
-        """Change bar colors."""
+        """Изменить цвета полосы."""
         if background_color is not None:
             self.background_color = background_color
         if fill_color is not None:
@@ -208,15 +231,23 @@ class HealthBar(UIElement):
 
 
 class ProgressBar(HealthBar):
-    """Progress bar (alias for HealthBar)."""
+    """Полоса прогресса (псевдоним для HealthBar)."""
 
     def __init__(self, x: int, y: int, width: int, height: int, max_value: float = 100):
+        """
+        Создать полосу прогресса.
+        
+        Args:
+            x, y: Позиция полосы
+            width, height: Размеры полосы
+            max_value: Максимальное значение
+        """
         super().__init__(x, y, width, height, max_value)
         self.fill_color = (0, 100, 255)
 
 
 class Text(UIElement):
-    """Text display UI element."""
+    """Элемент интерфейса для отображения текста."""
 
     def __init__(
         self,
@@ -227,12 +258,22 @@ class Text(UIElement):
         color: Tuple[int, int, int] = (255, 255, 255),
         font_path: Optional[str] = None,
     ):
+        """
+        Создать текстовый элемент.
+        
+        Args:
+            x, y: Позиция текста
+            text: Отображаемый текст
+            size: Размер шрифта
+            color: Цвет текста
+            font_path: Путь к файлу шрифта (None для системного)
+        """
         self.text = text
         self.size = size
         self.color = color
         self.font_path = font_path
 
-        # Create font
+        # Создаём шрифт
         if font_path:
             try:
                 self.font = pygame.font.Font(font_path, size)
@@ -241,16 +282,16 @@ class Text(UIElement):
         else:
             self.font = pygame.font.Font(None, size)
 
-        # Calculate size based on text
+        # Вычисляем размер на основе текста
         text_surface = self.font.render(text or " ", True, color)
         super().__init__(x, y, text_surface.get_width(), text_surface.get_height())
 
     def update(self, dt: float) -> None:
-        """Update text."""
+        """Обновить текст."""
         pass
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Draw text."""
+        """Нарисовать текст."""
         if not self.visible or not self.text:
             return
 
@@ -258,18 +299,18 @@ class Text(UIElement):
         screen.blit(text_surface, self.rect.topleft)
 
     def set_text(self, text: str) -> None:
-        """Set text content."""
+        """Установить содержимое текста."""
         self.text = text
         text_surface = self.font.render(text or " ", True, self.color)
         self.rect.width = text_surface.get_width()
         self.rect.height = text_surface.get_height()
 
     def set_color(self, color: Tuple[int, int, int]) -> None:
-        """Change text color."""
+        """Изменить цвет текста."""
         self.color = color
 
     def set_font_size(self, size: int) -> None:
-        """Change font size."""
+        """Изменить размер шрифта."""
         self.size = size
         if self.font_path:
             try:
@@ -279,27 +320,27 @@ class Text(UIElement):
         else:
             self.font = pygame.font.Font(None, size)
 
-        # Recalculate size
+        # Пересчитываем размер
         text_surface = self.font.render(self.text or " ", True, self.color)
         self.rect.width = text_surface.get_width()
         self.rect.height = text_surface.get_height()
 
     def set_font(self, font_path: str) -> None:
-        """Change font file."""
+        """Изменить файл шрифта."""
         self.font_path = font_path
         try:
             self.font = pygame.font.Font(font_path, self.size)
         except:
             self.font = pygame.font.Font(None, self.size)
 
-        # Recalculate size
+        # Пересчитываем размер
         text_surface = self.font.render(self.text or " ", True, self.color)
         self.rect.width = text_surface.get_width()
         self.rect.height = text_surface.get_height()
 
 
 class Panel(UIElement):
-    """Simple panel/container UI element."""
+    """Простой элемент панели/контейнера интерфейса."""
 
     def __init__(
         self,
@@ -310,17 +351,26 @@ class Panel(UIElement):
         color: Tuple[int, int, int] = (50, 50, 50),
         border_color: Optional[Tuple[int, int, int]] = None,
     ):
+        """
+        Создать панель.
+        
+        Args:
+            x, y: Позиция панели
+            width, height: Размеры панели
+            color: Цвет панели
+            border_color: Цвет границы (None для отсутствия границы)
+        """
         super().__init__(x, y, width, height)
         self.color = color
         self.border_color = border_color
         self.border_width = 2 if border_color else 0
 
     def update(self, dt: float) -> None:
-        """Update panel."""
+        """Обновить панель."""
         pass
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Draw panel."""
+        """Нарисовать панель."""
         if not self.visible:
             return
 
@@ -334,7 +384,7 @@ class Panel(UIElement):
         color: Tuple[int, int, int] = None,
         border_color: Tuple[int, int, int] = None,
     ) -> None:
-        """Change panel colors."""
+        """Изменить цвета панели."""
         if color is not None:
             self.color = color
         if border_color is not None:

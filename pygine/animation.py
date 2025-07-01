@@ -1,5 +1,5 @@
 """
-Animation system for sprite animations
+Система анимации для спрайтов.
 """
 
 import time
@@ -10,13 +10,13 @@ from dataclasses import dataclass
 @dataclass
 class Animation:
     """
-    Represents a single animation sequence.
+    Представляет одну анимационную последовательность.
 
-    Args:
-        name: Unique identifier for the animation
-        frames: List of frame indices to play
-        fps: Animation speed in frames per second
-        loop: Whether animation should repeat
+    Аргументы:
+        name: Уникальный идентификатор анимации
+        frames: Список индексов кадров для воспроизведения
+        fps: Скорость анимации (кадров в секунду)
+        loop: Зацикливать ли анимацию
     """
 
     name: str
@@ -25,22 +25,22 @@ class Animation:
     loop: bool = True
 
     def __post_init__(self):
-        """Validate animation parameters after initialization."""
+        """Проверяет параметры анимации после инициализации."""
         if not self.frames:
             raise ValueError(f"Animation '{self.name}' must have at least one frame")
         if self.fps <= 0:
             raise ValueError(f"Animation '{self.name}' fps must be positive")
 
-        # Calculate frame duration
+        # Рассчитываем длительность кадра
         self.frame_duration = 1.0 / self.fps
         self.total_duration = len(self.frames) * self.frame_duration
 
 
 class AnimationManager:
     """
-    Manages animation playback for sprites.
+    Управляет воспроизведением анимаций спрайтов.
 
-    Handles animation state, timing, and transitions between different animations.
+    Отвечает за состояние, тайминги и переходы между различными анимациями.
     """
 
     def __init__(self):
@@ -48,30 +48,30 @@ class AnimationManager:
         self.current_animation: Optional[Animation] = None
         self.current_animation_name: Optional[str] = None
 
-        # Timing
+        # Тайминг
         self.current_frame_index = 0
         self.frame_timer = 0.0
         self.start_time = 0.0
 
-        # State
+        # Состояние
         self.is_playing = False
         self.is_paused = False
         self.finished = False
 
     def add_animation(self, animation: Animation) -> None:
         """
-        Add an animation to the manager.
+        Добавить анимацию в менеджер.
 
-        Args:
+        Аргументы:
             animation: Animation object to add
         """
         self.animations[animation.name] = animation
 
     def play_animation(self, name: str, restart: bool = False) -> bool:
         """
-        Play a specific animation.
+        Запустить указанную анимацию.
 
-        Args:
+        Аргументы:
             name: Name of animation to play
             restart: Force restart if animation is already playing
 
@@ -105,7 +105,7 @@ class AnimationManager:
         return True
 
     def stop(self) -> None:
-        """Stop current animation."""
+        """Остановить текущую анимацию."""
         self.is_playing = False
         self.is_paused = False
         self.current_frame_index = 0
@@ -113,18 +113,18 @@ class AnimationManager:
         self.finished = False
 
     def pause(self) -> None:
-        """Pause current animation."""
+        """Приостановить текущую анимацию."""
         if self.is_playing:
             self.is_paused = True
 
     def resume(self) -> None:
-        """Resume paused animation."""
+        """Возобновить приостановленную анимацию."""
         if self.is_playing and self.is_paused:
             self.is_paused = False
 
     def update(self, dt: float) -> None:
         """
-        Update animation timing and frame.
+        Обновить таймер анимации и, при необходимости, переключить кадр.
 
         Args:
             dt: Delta time in seconds
@@ -135,15 +135,15 @@ class AnimationManager:
         if self.finished and not self.current_animation.loop:
             return
 
-        # Update timer
+        # Обновляем таймер
         self.frame_timer += dt
 
-        # Check if it's time for next frame
+        # Проверяем, пора ли перейти к следующему кадру
         if self.frame_timer >= self.current_animation.frame_duration:
             self.frame_timer = 0.0
             self.current_frame_index += 1
 
-            # Handle animation end
+            # Обрабатываем окончание анимации
             if self.current_frame_index >= len(self.current_animation.frames):
                 if self.current_animation.loop:
                     self.current_frame_index = 0
@@ -153,20 +153,20 @@ class AnimationManager:
                     self.is_playing = False
 
     def get_current_animation(self) -> Optional[Animation]:
-        """Get the currently playing animation."""
+        """Получить текущую воспроизводимую анимацию."""
         return self.current_animation
 
     def get_current_frame_index(self) -> int:
-        """Get current frame index within the animation."""
+        """Получить индекс текущего кадра внутри анимации."""
         return self.current_frame_index
 
     def is_finished(self) -> bool:
-        """Check if current animation has finished (for non-looping animations)."""
+        """Проверить, завершилась ли текущая анимация (если она не зациклена)."""
         return self.finished
 
     def get_animation_progress(self) -> float:
         """
-        Get animation progress as a value between 0.0 and 1.0.
+        Получить прогресс анимации в диапазоне от 0.0 до 1.0.
 
         Returns:
             Progress value (0.0 = start, 1.0 = end)
@@ -184,7 +184,7 @@ class AnimationManager:
 
     def get_animation_time_remaining(self) -> float:
         """
-        Get remaining time for current animation in seconds.
+        Получить оставшееся время текущей анимации в секундах.
 
         Returns:
             Remaining time (0.0 if animation is looping or finished)
@@ -203,16 +203,16 @@ class AnimationManager:
         )
 
     def has_animation(self, name: str) -> bool:
-        """Check if animation exists."""
+        """Проверить, существует ли анимация с таким именем."""
         return name in self.animations
 
     def get_animation_names(self) -> List[str]:
-        """Get list of all animation names."""
+        """Получить список всех имён анимаций."""
         return list(self.animations.keys())
 
     def remove_animation(self, name: str) -> bool:
         """
-        Remove an animation.
+        Удалить анимацию.
 
         Args:
             name: Name of animation to remove
@@ -221,7 +221,7 @@ class AnimationManager:
             True if animation was removed, False if not found
         """
         if name in self.animations:
-            # Stop current animation if it's the one being removed
+            # Останавливаем текущую анимацию, если её удаляем
             if self.current_animation_name == name:
                 self.stop()
 
@@ -230,12 +230,12 @@ class AnimationManager:
         return False
 
     def clear_animations(self) -> None:
-        """Remove all animations."""
+        """Удалить все анимации."""
         self.stop()
         self.animations.clear()
 
     def debug_info(self) -> Dict:
-        """Get debug information about animation state."""
+        """Получить отладочную информацию о состоянии анимации."""
         return {
             "current_animation": self.current_animation_name,
             "frame_index": self.current_frame_index,

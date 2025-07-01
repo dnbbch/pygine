@@ -1,5 +1,5 @@
 """
-Camera system for following sprites and smooth movement (viewport).
+Система камеры для слежения за спрайтами и плавного перемещения (видовая область).
 """
 
 import pygame
@@ -8,8 +8,7 @@ from .sprite import AnimatedSprite
 
 
 class Camera:
-    """Camera for following sprites and managing vi
-    ewport."""
+    """Камера, которая следует за спрайтами и управляет областью просмотра."""
 
     def __init__(self, width: int, height: int):
         self.width = width
@@ -21,12 +20,12 @@ class Camera:
         self.follow_speed = 5.0
 
     def follow(self, sprite: AnimatedSprite, smooth: bool = True) -> None:
-        """Set sprite to follow."""
+        """Установить спрайт, за которым нужно следовать."""
         self.target = sprite
         self.smooth_follow = smooth
 
     def update(self, dt: float) -> None:
-        """Update camera position."""
+        """Обновить позицию камеры."""
         if self.target:
             target_pos = self.target.get_position()
             target_x = target_pos[0] - self.width // 2
@@ -40,5 +39,5 @@ class Camera:
                 self.y = target_y
 
     def get_offset(self) -> Tuple[int, int]:
-        """Get camera offset for drawing."""
+        """Получить смещение камеры для отрисовки."""
         return (int(-self.x), int(-self.y))

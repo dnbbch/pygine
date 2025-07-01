@@ -1,5 +1,5 @@
 """
-Particle effects and visual effects system
+Система частиц и визуальных эффектов.
 """
 
 import pygame
@@ -9,7 +9,7 @@ from typing import List, Tuple, Optional
 
 
 class Particle:
-    """Basic particle for effects system."""
+    """Базовая частица для системы эффектов."""
 
     def __init__(
         self,
@@ -29,7 +29,7 @@ class Particle:
         self.alive = True
 
     def update(self, dt: float) -> None:
-        """Update particle state."""
+        """Обновить состояние частицы."""
         if not self.alive:
             return
 
@@ -41,7 +41,7 @@ class Particle:
             self.alive = False
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Draw particle to screen."""
+        """Нарисовать частицу на экране."""
         if self.alive:
             pygame.draw.circle(
                 screen, self.color, (int(self.x), int(self.y)), self.size
@@ -49,38 +49,38 @@ class Particle:
 
 
 class ParticleSystem:
-    """System for managing multiple particles."""
+    """Система для управления множеством частиц."""
 
     def __init__(self):
         self.particles: List[Particle] = []
 
     def add_particle(self, particle: Particle) -> None:
-        """Add a particle to the system."""
+        """Добавить частицу в систему."""
         self.particles.append(particle)
 
     def update(self, dt: float) -> None:
-        """Update all particles."""
+        """Обновить все частицы."""
         for particle in self.particles[:]:
             particle.update(dt)
             if not particle.alive:
                 self.particles.remove(particle)
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Draw all particles."""
+        """Нарисовать все частицы."""
         for particle in self.particles:
             particle.draw(screen)
 
     def clear(self) -> None:
-        """Remove all particles."""
+        """Удалить все частицы."""
         self.particles.clear()
 
 
-# Global particle system
+# Глобальная система частиц
 _particle_system = ParticleSystem()
 
 
 def create_explosion(x: float, y: float, size: int = 20) -> None:
-    """Create explosion effect at position."""
+    """Создать эффект взрыва в указанной позиции."""
     for _ in range(size):
         angle = random.uniform(0, 2 * math.pi)
         speed = random.uniform(50, 150)
@@ -98,7 +98,7 @@ def create_explosion(x: float, y: float, size: int = 20) -> None:
 
 
 def create_smoke(x: float, y: float, amount: int = 10) -> None:
-    """Create smoke effect at position."""
+    """Создать эффект дыма в указанной позиции."""
     for _ in range(amount):
         vx = random.uniform(-20, 20)
         vy = random.uniform(-50, -20)
@@ -111,7 +111,7 @@ def create_smoke(x: float, y: float, amount: int = 10) -> None:
 
 
 def create_sparkles(x: float, y: float, amount: int = 15) -> None:
-    """Create sparkle effect at position."""
+    """Создать эффект искр в указанной позиции."""
     for _ in range(amount):
         angle = random.uniform(0, 2 * math.pi)
         speed = random.uniform(30, 100)
@@ -129,10 +129,10 @@ def create_sparkles(x: float, y: float, amount: int = 15) -> None:
 
 
 def update_effects(dt: float) -> None:
-    """Update all effects. Should be called from game loop."""
+    """Обновить все эффекты. Вызывать из игрового цикла."""
     _particle_system.update(dt)
 
 
 def draw_effects(screen: pygame.Surface) -> None:
-    """Draw all effects. Should be called from game loop."""
+    """Отрисовать все эффекты. Вызывать из игрового цикла."""
     _particle_system.draw(screen)

@@ -1,5 +1,5 @@
 """
-Main game class for managing the game loop and window
+Главный игровой класс, управляющий игровым циклом и окном.
 """
 
 import pygame
@@ -10,22 +10,23 @@ from .utils import update_input_state
 
 class Game:
     """
-    Main game class that manages the game window, loop, and basic functionality.
+    Главный игровой класс, который управляет окном, игровым циклом
+    и базовой функциональностью.
 
-    This class provides a simple interface for creating games with automatic
-    game loop management, event handling, and frame rate control.
+    Класс предоставляет простой интерфейс для создания игр с автоматическим
+    управлением игровым циклом, обработкой событий и контролем частоты кадров.
 
-    Args:
-        width: Window width in pixels
-        height: Window height in pixels
-        title: Window title
-        fps: Target frames per second
-        background_color: Background color as (R, G, B) tuple
+    Аргументы:
+        width: Ширина окна в пикселях
+        height: Высота окна в пикселях
+        title: Заголовок окна
+        fps: Целевая частота кадров
+        background_color: Цвет фона в формате (R, G, B)
         *,
         create_display: bool = True,
 
-    Example:
-        >>> game = Game(800, 600, "My Game")
+    Пример:
+        >>> game = Game(800, 600, "Моя Игра")
         >>> player = AnimatedSprite("player.png", (32, 32))
         >>>
         >>> def update():
@@ -47,11 +48,11 @@ class Game:
         *,
         create_display: bool = True,
     ):
-        # Initialize pygame
+        # Инициализируем pygame
         if not pygame.get_init():
             pygame.init()
 
-        # Window properties
+        # Свойства окна
         self.width = width
         self.height = height
         self.title = title
@@ -71,24 +72,24 @@ class Game:
                 # Fallback: создаём временную поверхность (off-screen).
                 self.screen = pygame.Surface((width, height))
 
-        # Game loop control
+        # Параметры игрового цикла
         self.clock = pygame.time.Clock()
         self.running = False
         self.paused = False
 
-        # Delta time tracking
+        # Отслеживание дельта-времени
         self.dt = 0.0
         self.last_time = 0.0
 
-        # Event callbacks
+        # Колбэки событий
         self.update_callback: Optional[Callable] = None
         self.draw_callback: Optional[Callable] = None
         self.event_callbacks: List[Callable] = []
 
-        # Sprite groups for automatic management
+        # Группа спрайтов для автоматического управления
         self.all_sprites = pygame.sprite.Group()
 
-        # Debug information
+        # Отладочная информация
         self.show_fps = False
         self.font = None
 
@@ -98,19 +99,19 @@ class Game:
         draw_func: Optional[Callable] = None,
     ) -> None:
         """
-        Start the main game loop.
+        Запустить основной игровой цикл.
 
-        Args:
-            update_func: Function called each frame for game logic
-            draw_func: Function called each frame for drawing
+        Аргументы:
+            update_func: Функция, вызываемая каждый кадр для логики игры
+            draw_func: Функция, вызываемая каждый кадр для отрисовки
 
-        Example:
+        Пример:
             >>> def update():
-            ...     # Game logic here
+            ...     # Логика игры
             ...     pass
             ...
             >>> def draw():
-            ...     # Drawing code here
+            ...     # Отрисовка
             ...     pass
             ...
             >>> game.run(update, draw)
@@ -127,7 +128,7 @@ class Game:
             self.quit()
 
     def _game_loop(self) -> None:
-        """Main game loop implementation."""
+        """Реализация основного игрового цикла."""
         while self.running:
             # Calculate delta time
             current_time = pygame.time.get_ticks() / 1000.0
@@ -154,7 +155,7 @@ class Game:
             self.clock.tick(self.fps)
 
     def _handle_events(self) -> None:
-        """Handle pygame events."""
+        """Обработка событий pygame."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -169,7 +170,7 @@ class Game:
                 callback(event)
 
     def _update(self) -> None:
-        """Update game logic."""
+        """Обновить игровую логику."""
         # Update all sprites in the group
         self.all_sprites.update(self.dt)
 
@@ -178,7 +179,7 @@ class Game:
             self.update_callback()
 
     def _draw(self) -> None:
-        """Draw everything to the screen."""
+        """Отрисовать всё на экран."""
         # Clear screen
         self.screen.fill(self.background_color)
 
@@ -198,7 +199,7 @@ class Game:
             pygame.display.flip()
 
     def _draw_fps(self) -> None:
-        """Draw FPS counter."""
+        """Отрисовать счётчик FPS."""
         if not self.font:
             self.font = pygame.font.Font(None, 36)
 
@@ -208,78 +209,78 @@ class Game:
 
     def add_sprite(self, sprite: pygame.sprite.Sprite) -> None:
         """
-        Add a sprite to the automatic update and draw system.
+        Добавить спрайт в систему автоматического обновления и отрисовки.
 
-        Args:
-            sprite: Sprite to add
+        Аргументы:
+            sprite: Спрайт, который нужно добавить
         """
         self.all_sprites.add(sprite)
 
     def remove_sprite(self, sprite: pygame.sprite.Sprite) -> None:
         """
-        Remove a sprite from the automatic system.
+        Удалить спрайт из системы автоматического управления.
 
-        Args:
-            sprite: Sprite to remove
+        Аргументы:
+            sprite: Спрайт, который нужно удалить
         """
         self.all_sprites.remove(sprite)
 
     def add_event_callback(self, callback: Callable) -> None:
         """
-        Add a custom event handler.
+        Добавить пользовательский обработчик событий.
 
-        Args:
-            callback: Function that takes a pygame event
+        Аргументы:
+            callback: Функция, принимающая объект события pygame
         """
         self.event_callbacks.append(callback)
 
     def set_background_color(self, color: Tuple[int, int, int]) -> None:
         """
-        Set the background color.
+        Установить цвет фона.
 
-        Args:
-            color: RGB color tuple (0-255 each)
+        Аргументы:
+            color: RGB-кортеж цвета (0–255)
         """
         self.background_color = color
 
     def set_title(self, title: str) -> None:
         """
-        Set the window title.
+        Изменить заголовок окна.
 
-        Args:
-            title: New window title
+        Аргументы:
+            title: Новый заголовок окна
         """
         self.title = title
         pygame.display.set_caption(title)
 
     def set_fps(self, fps: int) -> None:
         """
-        Set target frame rate.
+        Задать целевую частоту кадров.
 
-        Args:
-            fps: Target frames per second
+        Аргументы:
+            fps: Кадров в секунду
         """
         self.fps = max(1, fps)
 
     def toggle_fps_display(self) -> None:
-        """Toggle FPS counter display."""
+        """Переключить отображение счётчика FPS."""
         self.show_fps = not self.show_fps
 
     def toggle_pause(self) -> None:
-        """Toggle game pause state."""
+        """Переключить состояние паузы игры."""
         self.paused = not self.paused
 
     def pause(self) -> None:
-        """Pause the game."""
+        """Поставить игру на паузу."""
         self.paused = True
 
     def resume(self) -> None:
-        """Resume the game."""
+        """Возобновить игру."""
         self.paused = False
 
     def quit(self) -> None:
         """
-        Quit the game and clean up.
+        Завершить игру и очистить ресурсы.
         """
         self.running = False
         pygame.quit()
@@ -287,68 +288,68 @@ class Game:
 
     def get_screen_rect(self) -> pygame.Rect:
         """
-        Get screen rectangle for boundary checking.
+        Получить прямоугольник экрана для проверки границ.
 
-        Returns:
-            Rectangle representing screen boundaries
+        Возвращает:
+            Объект Rect, представляющий границы экрана
         """
         return pygame.Rect(0, 0, self.width, self.height)
 
     def get_center(self) -> Tuple[int, int]:
         """
-        Get center point of the screen.
+        Получить центр экрана.
 
-        Returns:
-            Center coordinates as (x, y)
+        Возвращает:
+            Координаты центра (x, y)
         """
         return (self.width // 2, self.height // 2)
 
     def is_point_on_screen(self, x: int, y: int) -> bool:
         """
-        Check if a point is within screen boundaries.
+        Проверить, находится ли точка внутри границ экрана.
 
-        Args:
-            x: X coordinate
-            y: Y coordinate
+        Аргументы:
+            x: Координата X
+            y: Координата Y
 
-        Returns:
-            True if point is on screen
+        Возвращает:
+            True — если точка на экране
         """
         return 0 <= x < self.width and 0 <= y < self.height
 
     def screenshot(self, filename: str = "screenshot.png") -> None:
         """
-        Save a screenshot of the current screen.
+        Сохранить скриншот текущего экрана.
 
-        Args:
-            filename: Path to save screenshot
+        Аргументы:
+            filename: Путь к файлу скриншота
         """
         pygame.image.save(self.screen, filename)
 
     def get_delta_time(self) -> float:
         """
-        Get delta time (time since last frame) in seconds.
+        Получить дельта-время (время с прошлого кадра) в секундах.
 
-        Returns:
-            Delta time in seconds
+        Возвращает:
+            Дельта-время в секундах
         """
         return self.dt
 
     def get_fps(self) -> float:
         """
-        Get current frames per second.
+        Получить текущую частоту кадров.
 
-        Returns:
-            Current FPS
+        Возвращает:
+            Текущее значение FPS
         """
         return self.clock.get_fps()
 
     def debug_info(self) -> dict:
         """
-        Get debug information about the game state.
+        Получить отладочную информацию о состоянии игры.
 
-        Returns:
-            Dictionary with debug information
+        Возвращает:
+            Словарь с отладочной информацией
         """
         return {
             "fps": self.get_fps(),
