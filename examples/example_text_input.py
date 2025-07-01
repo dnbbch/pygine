@@ -4,6 +4,11 @@
 """
 
 import pygame
+import sys
+import os
+
+# Добавляем путь к модулю pygine
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pygine as pg
 
 # Инициализация игры
@@ -14,10 +19,10 @@ title = pg.Text(400, 100, "Введи своё имя", size=36, color=(255, 255
 title.rect.centerx = 400
 
 # Поле ввода имени
-name_input = pg.TextInput(250, 200, 300, 50, placeholder="Твоё имя", max_length=20, font_size=24)
+name_input = pg.TextInput(250, 200, 300, 50, placeholder="Твоё имя", max_length=20, font_size=24, border_radius=12)
 
 # Кнопка
-submit_button = pg.Button(300, 300, 200, 60, "Привет!", font_size=28)
+submit_button = pg.Button(300, 300, 200, 60, "Привет!", font_size=28, border_radius=15)
 
 # Текст результата
 result_text = pg.Text(400, 400, "", size=24, color=(0, 255, 0))
