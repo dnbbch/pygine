@@ -4,11 +4,6 @@
 """
 
 import pygame
-import sys
-import os
-
-# Добавляем путь к модулю pygine
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pygine as pg
 
 # Инициализация игры
