@@ -32,6 +32,9 @@ from .effects import (
     create_explosion,
     create_smoke,
     create_sparkles,
+    start_screen_shake,
+    get_screen_shake_offset,
+    is_screen_shaking,
 )
 from .ui import UIElement, Button, HealthBar, ProgressBar, Text, Panel
 from .camera import Camera
@@ -65,6 +68,9 @@ __all__ = [
     "create_explosion",
     "create_smoke",
     "create_sparkles",
+    "start_screen_shake",
+    "get_screen_shake_offset",
+    "is_screen_shaking",
     # Компоненты интерфейса
     "UIElement",
     "Button",

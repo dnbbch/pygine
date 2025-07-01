@@ -75,8 +75,69 @@ class ParticleSystem:
         self.particles.clear()
 
 
+class ScreenShake:
+    """Система тряски экрана для создания эффектов воздействия."""
+
+    def __init__(self):
+        self.intensity = 0.0  # Текущая интенсивность тряски
+        self.duration = 0.0   # Оставшееся время тряски
+        self.frequency = 30.0 # Частота тряски (в герцах)
+        self.time = 0.0       # Внутренний таймер
+        
+    def start_shake(self, intensity: float, duration: float, frequency: float = 30.0) -> None:
+        """
+        Начать эффект тряски экрана.
+        
+        Аргументы:
+            intensity: Интенсивность тряски (в пикселях)
+            duration: Продолжительность тряски (в секундах)
+            frequency: Частота тряски (колебаний в секунду)
+        """
+        self.intensity = max(intensity, self.intensity)  # Берём максимальную интенсивность
+        self.duration = max(duration, self.duration)     # Продлеваем время, если нужно
+        self.frequency = frequency
+        
+    def update(self, dt: float) -> None:
+        """Обновить состояние тряски."""
+        if self.duration > 0:
+            self.duration -= dt
+            self.time += dt
+            
+            # Уменьшаем интенсивность со временем
+            if self.duration <= 0:
+                self.intensity = 0.0
+                self.duration = 0.0
+                self.time = 0.0
+            
+    def get_offset(self) -> Tuple[float, float]:
+        """
+        Получить текущее смещение для тряски.
+        
+        Возвращает:
+            Кортеж (offset_x, offset_y) в пикселях
+        """
+        if self.duration <= 0 or self.intensity <= 0:
+            return (0.0, 0.0)
+            
+        # Создаём случайное смещение на основе времени и частоты
+        angle = self.time * self.frequency * 2 * math.pi
+        random_factor = random.uniform(0.7, 1.0)  # Добавляем случайность
+        
+        offset_x = math.sin(angle) * self.intensity * random_factor
+        offset_y = math.cos(angle * 1.3) * self.intensity * random_factor  # Разная частота для Y
+        
+        return (offset_x, offset_y)
+        
+    def is_active(self) -> bool:
+        """Проверить, активна ли тряска."""
+        return self.duration > 0 and self.intensity > 0
+
+
 # Глобальная система частиц
 _particle_system = ParticleSystem()
+
+# Глобальная система тряски экрана
+_screen_shake = ScreenShake()
 
 
 def create_explosion(x: float, y: float, size: int = 20) -> None:
@@ -128,9 +189,46 @@ def create_sparkles(x: float, y: float, amount: int = 15) -> None:
         _particle_system.add_particle(particle)
 
 
+def start_screen_shake(intensity: float, duration: float, frequency: float = 30.0) -> None:
+    """
+    Запустить эффект тряски экрана.
+    
+    Аргументы:
+        intensity: Интенсивность тряски (в пикселях, рекомендуется 1-10)
+        duration: Продолжительность тряски (в секундах)
+        frequency: Частота тряски (колебаний в секунду, по умолчанию 30)
+    
+    Пример:
+        >>> start_screen_shake(5, 0.5)  # Средняя тряска на полсекунды
+        >>> start_screen_shake(10, 1.0, 20)  # Сильная тряска на секунду с низкой частотой
+    """
+    _screen_shake.start_shake(intensity, duration, frequency)
+
+
+def get_screen_shake_offset() -> Tuple[float, float]:
+    """
+    Получить текущее смещение для тряски экрана.
+    
+    Возвращает:
+        Кортеж (offset_x, offset_y) в пикселях для применения к камере или отрисовке
+    """
+    return _screen_shake.get_offset()
+
+
+def is_screen_shaking() -> bool:
+    """
+    Проверить, активна ли тряска экрана.
+    
+    Возвращает:
+        True, если тряска активна
+    """
+    return _screen_shake.is_active()
+
+
 def update_effects(dt: float) -> None:
     """Обновить все эффекты. Вызывать из игрового цикла."""
     _particle_system.update(dt)
+    _screen_shake.update(dt)
 
 
 def draw_effects(screen: pygame.Surface) -> None:

@@ -6,6 +6,7 @@ import pygame
 import sys
 from typing import Tuple, Optional, Callable, List, Union
 from .utils import update_input_state
+from .effects import get_screen_shake_offset
 
 
 class Game:
@@ -217,6 +218,16 @@ class Game:
 
     def _draw(self) -> None:
         """Отрисовать всё на экран."""
+        # Получаем смещение тряски экрана
+        shake_offset = get_screen_shake_offset()
+        
+        # Создаём временную поверхность для применения тряски
+        if shake_offset != (0.0, 0.0):
+            # Создаём временный экран для отрисовки
+            temp_surface = pygame.Surface((self.width, self.height))
+            original_screen = self.screen
+            self.screen = temp_surface
+        
         # Отрисовка фона
         if self.background_surface is not None:
             # Используем фоновое изображение
@@ -235,6 +246,14 @@ class Game:
         # Draw debug information
         if self.show_fps:
             self._draw_fps()
+
+        # Применяем тряску, если активна
+        if shake_offset != (0.0, 0.0):
+            # Восстанавливаем оригинальный экран
+            self.screen = original_screen
+            # Очищаем экран и рисуем с смещением
+            self.screen.fill((0, 0, 0))  # Чёрный фон для границ при тряске
+            self.screen.blit(temp_surface, (int(shake_offset[0]), int(shake_offset[1])))
 
         # Обновляем только если инициализировано окно отображения
         if pygame.display.get_init() and pygame.display.get_surface() is not None:
