@@ -7,6 +7,60 @@ from typing import Tuple, Optional, Callable
 from abc import ABC, abstractmethod
 
 
+def draw_rounded_rect(surface: pygame.Surface, color: Tuple[int, int, int], rect: pygame.Rect, border_radius: int) -> None:
+    """
+    Нарисовать прямоугольник со скругленными углами.
+    
+    Args:
+        surface: Поверхность для рисования
+        color: Цвет заливки
+        rect: Прямоугольник для рисования
+        border_radius: Радиус скругления углов
+    """
+    if border_radius <= 0:
+        pygame.draw.rect(surface, color, rect)
+        return
+    
+    # Ограничиваем радиус
+    max_radius = min(rect.width, rect.height) // 2
+    radius = min(border_radius, max_radius)
+    
+    if radius <= 0:
+        pygame.draw.rect(surface, color, rect)
+        return
+    
+    # Используем встроенную функцию pygame для скругленных прямоугольников
+    pygame.draw.rect(surface, color, rect, border_radius=radius)
+
+
+def draw_rounded_rect_border(surface: pygame.Surface, color: Tuple[int, int, int], rect: pygame.Rect, border_radius: int, border_width: int = 1) -> None:
+    """
+    Нарисовать границу прямоугольника со скругленными углами.
+    
+    Args:
+        surface: Поверхность для рисования
+        color: Цвет границы
+        rect: Прямоугольник для рисования
+        border_radius: Радиус скругления углов
+        border_width: Толщина границы
+    """
+    if border_radius <= 0 or border_width <= 0:
+        if border_width > 0:
+            pygame.draw.rect(surface, color, rect, border_width)
+        return
+    
+    # Ограничиваем радиус
+    max_radius = min(rect.width, rect.height) // 2
+    radius = min(border_radius, max_radius)
+    
+    if radius <= 0:
+        pygame.draw.rect(surface, color, rect, border_width)
+        return
+    
+    # Используем встроенную функцию pygame для скругленных границ
+    pygame.draw.rect(surface, color, rect, border_width, border_radius=radius)
+
+
 class UIElement(ABC):
     """Базовый класс для всех элементов интерфейса."""
 
@@ -47,6 +101,7 @@ class Button(UIElement):
         hover_color: Tuple[int, int, int] = (150, 150, 150),
         text_color: Tuple[int, int, int] = (255, 255, 255),
         border_color: Tuple[int, int, int] = (255, 255, 255),
+        border_radius: int = 0,
     ):
         """
         Создать кнопку.
@@ -62,6 +117,7 @@ class Button(UIElement):
             hover_color: Цвет при наведении
             text_color: Цвет текста
             border_color: Цвет границы
+            border_radius: Радиус скругления углов (0 = острые углы)
         """
         super().__init__(x, y, width, height)
         self.text = text
@@ -72,6 +128,7 @@ class Button(UIElement):
         self.hover_color = hover_color
         self.text_color = text_color
         self.border_color = border_color
+        self.border_radius = border_radius
         self.hovered = False
         self.pressed = False
 
@@ -95,8 +152,12 @@ class Button(UIElement):
             return
 
         color = self.hover_color if self.hovered else self.color
-        pygame.draw.rect(screen, color, self.rect)
-        pygame.draw.rect(screen, self.border_color, self.rect, 2)
+        
+        # Рисуем фон кнопки
+        draw_rounded_rect(screen, color, self.rect, self.border_radius)
+        
+        # Рисуем границу кнопки
+        draw_rounded_rect_border(screen, self.border_color, self.rect, self.border_radius, 2)
 
         if self.text:
             text_surface = self.font.render(self.text, True, self.text_color)
@@ -139,6 +200,10 @@ class Button(UIElement):
         if border_color is not None:
             self.border_color = border_color
 
+    def set_border_radius(self, radius: int) -> None:
+        """Установить радиус скругления углов."""
+        self.border_radius = max(0, radius)
+
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Обработать события мыши."""
         if not self.enabled or not self.visible:
@@ -168,7 +233,7 @@ class Button(UIElement):
 class HealthBar(UIElement):
     """Элемент интерфейса полосы здоровья/прогресса."""
 
-    def __init__(self, x: int, y: int, width: int, height: int, max_value: float = 100):
+    def __init__(self, x: int, y: int, width: int, height: int, max_value: float = 100, border_radius: int = 0):
         """
         Создать полосу здоровья.
         
@@ -176,6 +241,7 @@ class HealthBar(UIElement):
             x, y: Позиция полосы
             width, height: Размеры полосы
             max_value: Максимальное значение
+            border_radius: Радиус скругления углов (0 = острые углы)
         """
         super().__init__(x, y, width, height)
         self.max_value = max_value
@@ -183,6 +249,7 @@ class HealthBar(UIElement):
         self.background_color = (50, 50, 50)
         self.fill_color = (0, 255, 0)
         self.border_color = (255, 255, 255)
+        self.border_radius = border_radius
 
     def update(self, dt: float) -> None:
         """Обновить полосу здоровья."""
@@ -194,7 +261,7 @@ class HealthBar(UIElement):
             return
 
         # Рисуем фон
-        pygame.draw.rect(screen, self.background_color, self.rect)
+        draw_rounded_rect(screen, self.background_color, self.rect, self.border_radius)
 
         # Рисуем заполнение
         if self.current_value > 0:
@@ -202,10 +269,10 @@ class HealthBar(UIElement):
             fill_rect = pygame.Rect(
                 self.rect.x, self.rect.y, fill_width, self.rect.height
             )
-            pygame.draw.rect(screen, self.fill_color, fill_rect)
+            draw_rounded_rect(screen, self.fill_color, fill_rect, self.border_radius)
 
         # Рисуем границу
-        pygame.draw.rect(screen, self.border_color, self.rect, 2)
+        draw_rounded_rect_border(screen, self.border_color, self.rect, self.border_radius, 2)
 
     def set_value(self, value: float) -> None:
         """Установить текущее значение."""
@@ -229,11 +296,15 @@ class HealthBar(UIElement):
         if border_color is not None:
             self.border_color = border_color
 
+    def set_border_radius(self, radius: int) -> None:
+        """Установить радиус скругления углов."""
+        self.border_radius = max(0, radius)
+
 
 class ProgressBar(HealthBar):
     """Полоса прогресса (псевдоним для HealthBar)."""
 
-    def __init__(self, x: int, y: int, width: int, height: int, max_value: float = 100):
+    def __init__(self, x: int, y: int, width: int, height: int, max_value: float = 100, border_radius: int = 0):
         """
         Создать полосу прогресса.
         
@@ -241,8 +312,9 @@ class ProgressBar(HealthBar):
             x, y: Позиция полосы
             width, height: Размеры полосы
             max_value: Максимальное значение
+            border_radius: Радиус скругления углов (0 = острые углы)
         """
-        super().__init__(x, y, width, height, max_value)
+        super().__init__(x, y, width, height, max_value, border_radius)
         self.fill_color = (0, 100, 255)
 
 
@@ -350,6 +422,7 @@ class Panel(UIElement):
         height: int,
         color: Tuple[int, int, int] = (50, 50, 50),
         border_color: Optional[Tuple[int, int, int]] = None,
+        border_radius: int = 0,
     ):
         """
         Создать панель.
@@ -359,10 +432,12 @@ class Panel(UIElement):
             width, height: Размеры панели
             color: Цвет панели
             border_color: Цвет границы (None для отсутствия границы)
+            border_radius: Радиус скругления углов (0 = острые углы)
         """
         super().__init__(x, y, width, height)
         self.color = color
         self.border_color = border_color
+        self.border_radius = border_radius
         self.border_width = 2 if border_color else 0
 
     def update(self, dt: float) -> None:
@@ -374,10 +449,10 @@ class Panel(UIElement):
         if not self.visible:
             return
 
-        pygame.draw.rect(screen, self.color, self.rect)
+        draw_rounded_rect(screen, self.color, self.rect, self.border_radius)
 
         if self.border_color:
-            pygame.draw.rect(screen, self.border_color, self.rect, self.border_width)
+            draw_rounded_rect_border(screen, self.border_color, self.rect, self.border_radius, self.border_width)
 
     def set_colors(
         self,
@@ -389,6 +464,10 @@ class Panel(UIElement):
             self.color = color
         if border_color is not None:
             self.border_color = border_color
+
+    def set_border_radius(self, radius: int) -> None:
+        """Установить радиус скругления углов."""
+        self.border_radius = max(0, radius)
 
 
 class TextInput(UIElement):
@@ -410,6 +489,7 @@ class TextInput(UIElement):
         border_color: Tuple[int, int, int] = (100, 100, 100),
         active_border_color: Tuple[int, int, int] = (0, 120, 215),
         cursor_color: Tuple[int, int, int] = (0, 0, 0),
+        border_radius: int = 0,
     ):
         """
         Создать поле ввода текста.
@@ -427,6 +507,7 @@ class TextInput(UIElement):
             border_color: Цвет границы
             active_border_color: Цвет границы при фокусе
             cursor_color: Цвет курсора
+            border_radius: Радиус скругления углов (0 = острые углы)
         """
         super().__init__(x, y, width, height)
         self.text = ""
@@ -440,6 +521,7 @@ class TextInput(UIElement):
         self.border_color = border_color
         self.active_border_color = active_border_color
         self.cursor_color = cursor_color
+        self.border_radius = border_radius
         
         # Состояние поля
         self.active = False
@@ -472,11 +554,11 @@ class TextInput(UIElement):
             return
         
         # Рисуем фон
-        pygame.draw.rect(screen, self.background_color, self.rect)
+        draw_rounded_rect(screen, self.background_color, self.rect, self.border_radius)
         
         # Рисуем границу
         border_color = self.active_border_color if self.active else self.border_color
-        pygame.draw.rect(screen, border_color, self.rect, 2)
+        draw_rounded_rect_border(screen, border_color, self.rect, self.border_radius, 2)
         
         # Подготавливаем текст для отображения
         display_text = self.text if self.text else self.placeholder
@@ -681,3 +763,7 @@ class TextInput(UIElement):
             self.active_border_color = active_border_color
         if cursor_color is not None:
             self.cursor_color = cursor_color
+
+    def set_border_radius(self, radius: int) -> None:
+        """Установить радиус скругления углов."""
+        self.border_radius = max(0, radius)
