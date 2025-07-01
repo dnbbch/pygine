@@ -70,7 +70,10 @@ class AnimatedSprite(pygame.sprite.Sprite):
         # Инициализируем свойства pygame спрайта
         self.image = self.frames[0] if self.frames else pygame.Surface(frame_size)
         self.rect = self.image.get_rect()
-        self.rect.topleft = position
+        # Position represents the sprite center across the engine,
+        # so initialize the rect using ``center`` rather than ``topleft``
+        # to keep coordinate behaviour consistent.
+        self.rect.center = position
 
         # Свойства коллизий
         self.collision_rect = self.rect.copy()
