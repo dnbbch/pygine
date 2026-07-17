@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygine"
+version = "1.0.0"
+description = "Упрощённая библиотека разработки игр на основе pygame"
+readme = "README.md"
+requires-python = ">=3.7"
+license = { file = "LICENSE" }
+authors = [{ name = "pygine contributors" }]
+dependencies = [
+    "pygame==2.6.1",
+]
+
+[project.urls]
+Documentation = "https://dnbbch.github.io/pygine"
+
+[tool.setuptools]
+packages = ["pygine"]
