@@ -3,15 +3,18 @@
 Демонстрирует работу камеры и смещение объектов при её движении.
 """
 
+import os
 import pygame
 import pygine as pg
+
+_ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets")
 
 # Инициализация игры
 game = pg.Game(800, 600, "Система камеры")
 camera = pg.Camera(800, 600)
 
 # Создание игрока с анимацией
-player = pg.AnimatedSprite("platformer_sprites.png", (64, 64), (400, 300))
+player = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (400, 300))
 player.add_animation("idle", [0, 1, 2, 3], fps=5, loop=True)
 player.play_animation("idle")
 player.set_scale(3.0)
@@ -20,25 +23,25 @@ player.set_scale(3.0)
 objects = []
 
 # Объект 1 - левый верх
-obj1 = pg.AnimatedSprite("platformer_sprites.png", (64, 64), (100, 100))
+obj1 = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (100, 100))
 obj1.add_animation("idle", [0, 1, 2, 3], fps=5, loop=True)
 obj1.play_animation("idle")
 objects.append(obj1)
 
 # Объект 2 - правый верх
-obj2 = pg.AnimatedSprite("platformer_sprites.png", (64, 64), (700, 200))
+obj2 = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (700, 200))
 obj2.add_animation("idle", [0, 1, 2, 3], fps=5, loop=True)
 obj2.play_animation("idle")
 objects.append(obj2)
 
 # Объект 3 - левый низ
-obj3 = pg.AnimatedSprite("platformer_sprites.png", (64, 64), (300, 500))
+obj3 = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (300, 500))
 obj3.add_animation("idle", [0, 1, 2, 3], fps=5, loop=True)
 obj3.play_animation("idle")
 objects.append(obj3)
 
 # Объект 4 - правый низ
-obj4 = pg.AnimatedSprite("platformer_sprites.png", (64, 64), (900, 400))
+obj4 = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (900, 400))
 obj4.add_animation("idle", [0, 1, 2, 3], fps=5, loop=True)
 obj4.play_animation("idle")
 objects.append(obj4)

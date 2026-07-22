@@ -3,8 +3,11 @@
 Показывает различные состояния: стойка, бег, атака, блок, прыжки и другие.
 """
 
+import os
 import pygine as pg
 import pygame
+
+_ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets")
 
 pygame.init()
 
@@ -14,57 +17,57 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("All Animations Demo")
 clock = pygame.time.Clock()
 
-stance_sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64))
+stance_sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64))
 stance_sprite.add_animation("stance", [0, 1, 2, 3], fps=8, loop=True)
 stance_sprite.play_animation("stance")
 stance_sprite.set_position(150, 150)
 
-run_sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64))
+run_sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64))
 run_sprite.add_animation("run", [4, 5, 6, 7, 8, 9, 10, 11], fps=8, loop=True)
 run_sprite.play_animation("run")
 run_sprite.set_position(450, 150)
 
-swing_sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64))
+swing_sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64))
 swing_sprite.add_animation("swing", [12, 13, 14, 15], fps=8, loop=True)
 swing_sprite.play_animation("swing")
 swing_sprite.set_position(750, 150)
 
-block_sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64))
+block_sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64))
 block_sprite.add_animation("block", [16, 17], fps=8, loop=True)
 block_sprite.play_animation("block")
 block_sprite.set_position(1050, 150)
 
-hit_die_sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64))
+hit_die_sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64))
 hit_die_sprite.add_animation("hit_die", [18, 19, 20, 21, 22, 23], fps=8, loop=True)
 hit_die_sprite.play_animation("hit_die")
 hit_die_sprite.set_position(150, 400)
 
-cast_sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64))
+cast_sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64))
 cast_sprite.add_animation("cast", [24, 25, 26, 27], fps=8, loop=True)
 cast_sprite.play_animation("cast")
 cast_sprite.set_position(450, 400)
 
-shoot_sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64))
+shoot_sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64))
 shoot_sprite.add_animation("shoot", [28, 29, 30, 31], fps=8, loop=True)
 shoot_sprite.play_animation("shoot")
 shoot_sprite.set_position(750, 400)
 
-walk_sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64))
+walk_sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64))
 walk_sprite.add_animation("walk", [32, 33, 34, 35, 36, 37, 38, 39], fps=8, loop=True)
 walk_sprite.play_animation("walk")
 walk_sprite.set_position(1050, 400)
 
-duck_sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64))
+duck_sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64))
 duck_sprite.add_animation("duck", [40, 41], fps=8, loop=True)
 duck_sprite.play_animation("duck")
 duck_sprite.set_position(150, 650)
 
-jump_fall_sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64))
+jump_fall_sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64))
 jump_fall_sprite.add_animation("jump_fall", [42, 43, 44, 45, 46, 47], fps=8, loop=True)
 jump_fall_sprite.play_animation("jump_fall")
 jump_fall_sprite.set_position(450, 650)
 
-ascend_sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64))
+ascend_sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64))
 ascend_sprite.add_animation("stand", [64], fps=8, loop=True)
 ascend_sprite.play_animation("stand")
 ascend_sprite.set_position(750, 650)

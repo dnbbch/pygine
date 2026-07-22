@@ -3,15 +3,18 @@
 Демонстрирует создание различных эффектов: взрывов, дыма и искр.
 """
 
+import os
 import pygame
 import pygine as pg
 from pygine.effects import create_explosion, create_smoke, create_sparkles, update_effects, draw_effects
+
+_ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets")
 
 # Инициализация игры
 game = pg.Game(800, 600, "Система эффектов")
 
 # Создание игрока
-player = pg.AnimatedSprite("platformer_sprites.png", (64, 64), (400, 300))
+player = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (400, 300))
 player.add_animation("idle", [0], fps=1)
 player.play_animation("idle")
 player.set_scale(2.0)

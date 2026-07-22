@@ -3,8 +3,11 @@
 Демонстрирует базовое использование игрового движка pygine.
 """
 
+import os
 import pygine as pg
 import pygame
+
+_ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets")
 
 # Инициализация pygame
 pygame.init()
@@ -15,7 +18,7 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Test Game 1 - Native pygame loop")
 clock = pygame.time.Clock()
 
-player = pg.AnimatedSprite("./platformer_sprites.png", (64, 64))
+player = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64))
 player.add_animation("walk", [0, 1, 2, 3], fps=5, loop=True)
 player.add_animation("run", [4, 5, 6, 7, 8, 9, 10, 11], fps=30, loop=True)
 

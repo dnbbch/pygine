@@ -3,14 +3,17 @@
 Демонстрирует автоматический поворот спрайта и визуализацию области коллизий.
 """
 
+import os
 import pygine as pg
+
+_ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets")
 
 
 # Инициализация игры
 game = pg.Game(800, 600, "Поворот спрайта")
 
 # Создание и настройка спрайта
-sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64), (400, 300))
+sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (400, 300))
 sprite.set_scale(2.0)
 
 

@@ -3,23 +3,26 @@
 Демонстрирует различные типы коллизий: прямоугольные, круглые и повернутые.
 """
 
+import os
 import pygine as pg
+
+_ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets")
 
 # Инициализация игры
 game = pg.Game(800, 600, "Система коллизий")
 
 # Создание игрока (управляется мышью)
-player = pg.AnimatedSprite("./platformer_sprites.png", (64, 64), (100, 100))
+player = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (100, 100))
 player.set_scale(2.0)
 
 # Создание целей с разными типами коллизий
-target1 = pg.AnimatedSprite("./platformer_sprites.png", (64, 64), (300, 200))
+target1 = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (300, 200))
 target1.set_scale(1.5)
 
-target2 = pg.AnimatedSprite("./platformer_sprites.png", (64, 64), (500, 200))
+target2 = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (500, 200))
 target2.set_collision_circle(30)  # Круглая область коллизии
 
-target3 = pg.AnimatedSprite("./platformer_sprites.png", (64, 64), (400, 400))
+target3 = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (400, 400))
 target3.set_rotation(45)  # Повернутый спрайт
 
 

@@ -3,9 +3,12 @@
 Демонстрирует переключение между главным меню и игровой сценой.
 """
 
+import os
 import pygame
 import pygine as pg
 from pygine.scene import Scene, SceneManager
+
+_ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets")
 
 # Инициализация игры
 game = pg.Game(800, 600, "Система сцен")
@@ -45,7 +48,7 @@ class GameScene(Scene):
     def __init__(self):
         super().__init__("game")
         # Создание игрока
-        self.player = pg.AnimatedSprite("platformer_sprites.png", (64, 64), (400, 300))
+        self.player = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (400, 300))
         self.player.add_animation("idle", [0], fps=1)
         self.player.play_animation("idle")
         self.instruction_text = "Нажмите ESC для возврата в меню"

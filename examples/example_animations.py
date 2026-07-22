@@ -3,13 +3,16 @@
 Демонстрирует создание анимации из последовательности кадров и её воспроизведение.
 """
 
+import os
 import pygine as pg
+
+_ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets")
 
 # Инициализация игры
 game = pg.Game(800, 600, "Анимация спрайта")
 
 # Создание анимированного спрайта
-sprite = pg.AnimatedSprite("./platformer_sprites.png", (64, 64), (400, 300))
+sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (400, 300))
 
 # Настройка анимации
 # Параметры: название, список кадров, скорость (кадры в секунду), зацикливание

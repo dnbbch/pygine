@@ -3,14 +3,17 @@
 Демонстрирует автоматическое масштабирование фона под размеры окна.
 """
 
+import os
 import pygame
 import pygine as pg
 
+_ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets")
+
 # Инициализация игры с фоновым изображением
-game = pg.Game(800, 600, "Фоновое изображение", background_image="background.png")
+game = pg.Game(800, 600, "Фоновое изображение", background_image=os.path.join(_ASSETS_DIR, "background.png"))
 
 # Создание анимированного спрайта
-sprite = pg.AnimatedSprite("platformer_sprites.png", (64, 64), (400, 300))
+sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (400, 300))
 sprite.add_animation("idle", [0, 1, 2, 3], fps=5, loop=True)
 sprite.play_animation("idle")
 sprite.set_scale(3.0)
@@ -19,7 +22,7 @@ sprite.set_scale(3.0)
 def update():
     # Управление фоном
     if pg.key_pressed(pygame.K_1):
-        game.set_background_image("background.png")
+        game.set_background_image(os.path.join(_ASSETS_DIR, "background.png"))
     
     if pg.key_pressed(pygame.K_2):
         game.set_background_color((50, 50, 50))

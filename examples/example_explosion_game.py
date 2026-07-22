@@ -3,8 +3,11 @@
 Нажми на прямоугольник или жди 5 секунд, чтобы увидеть взрыв!
 """
 
+import os
 import pygame
 import pygine as pg
+
+_ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets")
 
 # Инициализация игры
 game = pg.Game(800, 600, "Игра с взрывом")
@@ -83,7 +86,7 @@ def explode():
     global game_state, explosion_sprite, target_color
     
     # Создание анимации взрыва
-    explosion_sprite = pg.AnimatedSprite("explosion_sprites.png", (130, 130), (400, 300))
+    explosion_sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "explosion_sprites.png"), (130, 130), (400, 300))
     explosion_sprite.add_animation("explode", list(range(25)), fps=15, loop=False)
     explosion_sprite.play_animation("explode")
     

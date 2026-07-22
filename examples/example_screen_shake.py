@@ -3,15 +3,18 @@
 Демонстрирует различные варианты тряски при взрывах и других эффектах.
 """
 
+import os
 import pygame
 import pygine as pg
 from pygine.effects import start_screen_shake, create_explosion, update_effects, draw_effects
+
+_ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets")
 
 # Инициализация игры
 game = pg.Game(800, 600, "Эффект тряски экрана")
 
 # Создание анимированного спрайта
-sprite = pg.AnimatedSprite("platformer_sprites.png", (64, 64), (400, 300))
+sprite = pg.AnimatedSprite(os.path.join(_ASSETS_DIR, "platformer_sprites.png"), (64, 64), (400, 300))
 sprite.add_animation("idle", [0, 1, 2, 3], fps=5, loop=True)
 sprite.play_animation("idle")
 sprite.set_scale(3.0)
