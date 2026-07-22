@@ -53,7 +53,7 @@ game.run()
 ## 📦 Установка
 
 ```bash
-pip install -r requirements.txt
+pip install git+https://github.com/dnbbch/pygine.git
 ```
 
 ## 🤝 Поддержка
